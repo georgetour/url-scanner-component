@@ -1,5 +1,5 @@
 <?php
-namespace GeorgeTour\UrlScanner;
+namespace GeorgeTour\Url;
 
 class Scanner {
 
