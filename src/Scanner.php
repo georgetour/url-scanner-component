@@ -1,62 +1,58 @@
 <?php
-namespace GeorgeTour\Url;
+namespace GeorgeTour\UrlScanner;
 
-class Scanner
-{
-    /**
-     * @var array An array of URLs
-     */
-    protected $urls;
+class Scanner {
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $httpClient;
+  /**
+    * @var array An array of URLs
+  */
+  protected $urls;
 
-    /**
-     * Constructor
-     * @param array $urls An array of URLs to scan
-     */
-    public function __construct(array $urls)
-    {
-        $this->urls = $urls;
-        $this->httpClient = new \GuzzleHttp\Client();
+  /**
+    * @var \GuzzleHttp\Client
+  */
+  protected $httpClient;
+
+  /**
+    * Constructor
+    * @param array $urls An array of URLs to scan
+  */
+  public function __construct(array $urls){
+    $this->urls = $urls;
+    $this->httpClient = new \GuzzleHttp\Client();
+  }
+
+  /**
+    * Get invalid URLs
+    * @return array
+  */
+  public function getInvalidUrls(){
+    $invalidUrls = [];
+
+    foreach ($this->urls as $url) {
+      try {
+        $statusCode = $this->getStatusCodeForUrl($url);
+    } catch (\Exception $e) {
+        $statusCode = 500;
     }
-
-    /**
-     * Get invalid URLs
-     * @return array
-     */
-    public function getInvalidUrls()
-    {
-        $invalidUrls = [];
-        foreach ($this->urls as $url) {
-            try {
-                $statusCode = $this->getStatusCodeForUrl($url);
-            } catch (\Exception $e) {
-                $statusCode = 500;
-            }
-
-            if ($statusCode >= 400) {
-                array_push($invalidUrls, [
-                    'url' => $url,
-                    'status' => $statusCode
-                ]);
-            }
-        }
-
-        return $invalidUrls;
+      if ($statusCode >= 400) {
+        array_push($invalidUrls, [
+        'url' => $url,
+        'status' => $statusCode
+        ]);
+      }
     }
-
-    /**
-     * Get HTTP status code for URL
-     * @param string $url The remote URL
-     * @return int The HTTP status code
-     */
-    protected function getStatusCodeForUrl($url)
-    {
-        $httpResponse = $this->httpClient->options($url);
-
-        return $httpResponse->getStatusCode();
-    }
+    return $invalidUrls;
+  }
+  
+  /**
+    * Get HTTP status code for URL
+    * @param string $url The remote URL
+    * @return int The HTTP status code
+  */
+  protected function getStatusCodeForUrl($url){
+    $httpResponse = $this->httpClient->options($url);
+    
+    return $httpResponse->getStatusCode();
+  }
 }

@@ -1,3 +1,2 @@
 # url-scanner-component
-
-Testing packagist and composer with a simple component that scans URls and returns if they are valid or not.
+Test valid URL from CSV or anywhere you want. To download the example  https://github.com/georgetour/url-scanner-component
